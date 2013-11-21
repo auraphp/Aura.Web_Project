@@ -6,7 +6,7 @@
     # keeping the query string intact
     RewriteRule ^$ index.php [QSA]
     
-    # look for cached versions of files in $system/web/cache/*
+    # look for cached versions of files in ./web/cache/
     RewriteCond %{DOCUMENT_ROOT}/cache%{REQUEST_URI} -f
     RewriteRule ^(.*)$ cache/$1 [L]
     
