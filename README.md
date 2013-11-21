@@ -4,6 +4,18 @@ Unlike Aura libraries, this Project package has dependencies. It composes
 various libraries and an [Aura.Web_Kernel][] into a minimal framework for
 web applications.
 
+By "minimal" we mean *very* minimal. The project provides only a dependency
+injection container, a configuration system, a router, a dispatcher, request
+and response objects, and a logging instance. This is the bare minimum needed
+to get a web application running.
+
+This minimal implementation should not be taken as "restrictive". The DI
+container, coupled with the kernel's two-stage configuration, allows a wide
+range of programmatic service definitions. The router and dispatcher are built
+with iterative refactoring in mind, so you can start with micro-framework-like
+closure controllers, and work your way into more complex controller objects of
+your own design.
+
 ## Foreword
 
 TBD
@@ -17,8 +29,8 @@ Install via Composer to a {$PROJECT_PATH} of your choosing:
 This will create the project skeleton and install all of the necessary
 packages.
 
-Once you have installed the Aura system, start the built-in PHP server inside
-the new project web directory:
+Once you have installed the project, start the built-in PHP server inside the
+new project web directory:
 
     cd {$PROJECT_PATH}/web
     php -S localhost:8000
@@ -26,15 +38,15 @@ the new project web directory:
 When you browse to <http://localhost:8000> you should see "Hello World!" as
 the output.
 
-## Configuration
+### Configuration
 
 TBD
 
-## Routing
+### Routing
 
 TBD
 
-## Controllers
+### Controllers
 
 TBD
 
