@@ -20,7 +20,7 @@
         "aura/includer": "dev-develop-2",
         "aura/router": "dev-develop-2",
         "aura/web": "dev-develop-2",
-        "aura/web-kernel": "dev-develop-2"
-        "monolog/monolog": "*",
+        "aura/web-kernel": "dev-develop-2",
+        "monolog/monolog": "*"
     }
 }
