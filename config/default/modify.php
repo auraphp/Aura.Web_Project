@@ -1,6 +1,6 @@
 <?php
 /**
- * @var $di The DI container.
+ * @var $di Aura\Di\Container The DI container.
  */
 $router   = $di->get('web_router');
 $request  = $di->get('web_request');
