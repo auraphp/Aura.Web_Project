@@ -1,20 +1,13 @@
 <?php
-use Aura\Web_Kernel\WebKernelFactory;
+/**
+ * 
+ * This file is part of Aura for PHP.
+ * 
+ * @package Aura.Cli_Kernel
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 
-// the project base directory
-$base = dirname(__DIR__);
-
-// the project config mode
-$file = str_replace("/", DIRECTORY_SEPARATOR, "{$base}/config/_mode");
-$mode = trim(file_get_contents($file));
-if (! $mode) {
-    $mode = "default";
-}
-
-// autoloader
-$loader = require "{$base}/vendor/autoload.php";
-
-// create and invoke the project kernel
-$factory = new WebKernelFactory;
-$kernel = $factory->newInstance($base, $mode, $loader);
-$kernel->__invoke();
+// hand off to the kernel script
+require dirname(__DIR__) . '/vendor/aura/web-kernel/scripts/kernel.php';
