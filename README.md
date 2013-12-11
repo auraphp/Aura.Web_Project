@@ -199,7 +199,7 @@ $di->params['App\Controllers\BlogController'] = array(
 ?>
 ```
 
-After that, put the `App\Controllers\BlogController` object in the dispatcher
+After that, put the _App\Controllers\BlogController_ object in the dispatcher
 under the name `blog` as a lazy-loaded instantiation ...
 
 ```php
