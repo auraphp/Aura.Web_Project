@@ -40,8 +40,8 @@ the output.
 ### Configuration
 
 Configuration files are located in `{$PROJECT_PATH}/config` and are organized
-into subdirectories by config mode.  (The config mode is stored in
-`_mode` file in the config directory.)
+into subdirectories by config mode. (The config mode is stored in the `_mode`
+file in the config directory.)
 
 The `default` mode directory is always loaded; if the mode is something other
 than `default` then the files in that directory will be loaded after `default`.
@@ -58,33 +58,22 @@ programmatic modification.
 
 (TBD: examples)
 
-
 ### Routing and Dispatching
 
 To add routes of your own, edit the
-`{$PROJECT_PATH}/config/default/modify.php` file. Therein, you will find some
-service objects extracted from the DI container:
-
-- `$router`, an [Aura\Router\Router][] instance,
-- `$dispatcher`, an [Aura\Dispatcher\Dispatcher][] instance,
-- `$request`, an [Aura\Web\Request][] instance, and
-- `$response`, an [Aura\Web\Response][] instance.
-
-[Aura\Router\Router]: https://github.com/auraphp/Aura.Router/tree/develop-2
-[Aura\Dispatcher\Dispatcher]: https://github.com/auraphp/Aura.Dispatcher/tree/develop-2
-[Aura\Web\Request]: https://github.com/auraphp/Aura.Web/tree/develop-2/README-REQUEST.md
-[Aura\Web\Response]: https://github.com/auraphp/Aura.Web/tree/develop-2/README-RESPONSE.md
-
+`{$PROJECT_PATH}/config/default/modify/routes.php` and `dispatcher.php` files.
+Here are three different styles of routing and dispatching.
 
 #### Micro-Framework Style
 
 The following is an example of a micro-framework style route, where the
-controller logic is embedded in the route params:
+controller logic is embedded in the route params. Edit the
+`config/default/modify/router.php` file to add the following route.
 
 ```php
 <?php
 /**
- * {$PROJECT_PATH}/config/default/define.php
+ * {$PROJECT_PATH}/config/default/modify/router.php
  */
 $router->add('blog.read', '/blog/read/{id}')
     ->addValues(array(
@@ -98,19 +87,29 @@ $router->add('blog.read', '/blog/read/{id}')
 ?>
 ```
 
-You can modify this to put the controller logic in the dispatcher instead of
-the route itself:
+You can now start up the built-in PHP server to get the application
+running ...
+
+    cd {$PROJECT_PATH}
+    php -S localhost:8000 -t web/
+
+... and browse to <http://localhost:8000/blog/read/88> to see the application
+output.
+
+
+#### Modified Micro-Framework Style
+
+You can modify the above to put the controller logic in the dispatcher instead
+of the route itself.
+
+First, extract the logic to the dispatcher under the name `blog.read`, placing
+it in the `config/default/modify/dispatcher.php` file.
 
 ```php
 <?php
 /**
- * {$PROJECT_PATH}/config/default/define.php
+ * {$PROJECT_PATH}/config/default/modify/dispatcher.php
  */
-$router->add('blog.read', '/blog/read/{id}')
-    ->addValues(array(
-        'controller' => 'blog.read',
-    ));
-
 $dispatcher->setObject('blog.read', function ($id) use ($request, $response) {
     $content = "Reading blog post $id";
     $response->content->set(htmlspecialchars(
@@ -120,13 +119,27 @@ $dispatcher->setObject('blog.read', function ($id) use ($request, $response) {
 ?>
 ```
 
-Either way, you can start up the built-in PHP server to get the application
+Then point the route to the 'blog.read' dispatcher object.
+
+```php
+<?php
+/**
+ * {$PROJECT_PATH}/config/default/modify/router.php
+ */
+$router->add('blog.read', '/blog/read/{id}')
+    ->addValues(array(
+        'controller' => 'blog.read',
+    ));
+?>
+```
+
+You can now start up the built-in PHP server to get the application
 running ...
 
     cd {$PROJECT_PATH}
     php -S localhost:8000 -t web/
 
-... then browse to <http://localhost:8000/blog/read/88> to see the application
+... and browse to <http://localhost:8000/blog/read/88> to see the application
 output.
 
 
@@ -166,10 +179,9 @@ class BlogController
 ?>
 ```
 
-Next, now that we have a `BlogController` we need to tell the project how to
-build it through the DI system. Edit the project `config/default/define.php` (first stage)
-config file to tell the DI system to pass in the request and response objects to the
-constructor.
+Next, tell the project how to build the _BlogController_ through the DI
+system. Edit the project `config/default/define.php` config file to tell the
+DI system to pass _Request_ and _Response_ objects to the constructor.
 
 ```php
 <?php
@@ -183,28 +195,35 @@ $di->params['App\Controllers\BlogController'] = array(
 ?>
 ```
 
-Finally, set the router and dispatcher to point to the `BlogController`. Do
-this in the `config/default/modify.php` (second-stage) config file.
+After that, put the `App\Controllers\BlogController` object in the dispatcher
+under the name `blog` as a lazy-loaded instantiation ...
 
 ```php
 <?php
 /**
- * {$PROJECT_PATH}/config/default/modify.php
+ * {$PROJECT_PATH}/config/default/modify/dispatcher.php
  */
+$dispatcher->setObject('blog', $di->lazyNew('App\Controllers\BlogController'));
+?>
+```
 
-// set the router to use the 'blog' controller (dispatcher) object ...
+... and finally, point the router to the `blog` controller object and its
+its `read` action:
+
+```php
+<?php
+/**
+ * {$PROJECT_PATH}/config/default/modify/dispatcher.php
+ */
 $router->add('blog.read', '/blog/read/{id}')
     ->addValues(array(
         'controller' => 'blog',
         'action' => 'read',
     ));
-
-// .. and set the dispatcher 'blog' controller object to a new BlogController
-$dispatcher->setObject('blog', $di->lazyNew('App\Controllers\BlogController'));
 ?>
 ```
 
-Again, you can start up the built-in PHP server to get the application
+You can now start up the built-in PHP server to get the application
 running ...
 
     cd {$PROJECT_PATH}
@@ -213,9 +232,15 @@ running ...
 ... then browse to <http://localhost:8000/blog/read/88> to see the application
 output.
 
-### Other Variations
+#### Other Variations
 
 These are only some common variations of router and dispatcher interactions;
 [there are many other combinations][].
 
 [there are many other combinations]: https://github.com/auraphp/Aura.Dispatcher/tree/develop-2#refactoring-to-architecture-changes
+
+### Logging
+
+The project automatically logs to `{$PROJECT_PATH}/tmp/web.log`. If you want
+to change the logging behaviors, edit the `config/default/modify/logger.php`
+file to modify how Monolog handles entries.
