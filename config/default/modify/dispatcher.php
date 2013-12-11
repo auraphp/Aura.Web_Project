@@ -10,3 +10,8 @@
  * @var Aura\Di\Container $di The DI container.
  * 
  */
+
+// get the dispatcher service
+$dispatcher = $di->get('web_dispatcher');
+
+// add dispatcher objects below
