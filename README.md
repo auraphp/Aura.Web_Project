@@ -75,6 +75,8 @@ controller logic is embedded in the route params. Edit the
 /**
  * {$PROJECT_PATH}/config/default/modify/router.php
  */
+$request  = $di->get('web_request');
+$response = $di->get('web_response');
 $router->add('blog.read', '/blog/read/{id}')
     ->addValues(array(
         'controller' => function ($id) use ($request, $response) {
@@ -110,6 +112,8 @@ it in the `config/default/modify/dispatcher.php` file.
 /**
  * {$PROJECT_PATH}/config/default/modify/dispatcher.php
  */
+$request  = $di->get('web_request');
+$response = $di->get('web_response');
 $dispatcher->setObject('blog.read', function ($id) use ($request, $response) {
     $content = "Reading blog post $id";
     $response->content->set(htmlspecialchars(
