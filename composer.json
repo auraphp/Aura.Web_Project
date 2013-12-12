@@ -15,6 +15,6 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "aura/web-kernel": "dev-develop-2"
+        "aura/web-kernel": "2.*@dev"
     }
 }
