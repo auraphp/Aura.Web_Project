@@ -15,6 +15,8 @@ with iterative refactoring in mind, so you can start with micro-framework-like
 closure controllers, and work your way into more complex controller objects of
 your own design.
 
+  [Aura.Web_Kernel]: https://github.com/auraphp/Aura.Web_Kernel
+
 ## Foreword
 
 TBD
