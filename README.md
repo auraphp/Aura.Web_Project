@@ -247,6 +247,6 @@ These are only some common variations of router and dispatcher interactions;
 
 ### Logging
 
-The project automatically logs to `{$PROJECT_PATH}/tmp/web.log`. If you want
-to change the logging behaviors, edit the `config/default/modify/logger.php`
-file to modify how Monolog handles entries.
+The project automatically logs to `{$PROJECT_PATH}/tmp/{$mode}.web.log`. If
+you want to change the logging behaviors, edit the
+`config/default/modify/logger.php` file to modify how Monolog handles entries.
