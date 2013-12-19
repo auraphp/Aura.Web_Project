@@ -17,7 +17,7 @@ $logger = $di->get('logger');
 
 // add a log handler for whatever the config mode is
 $mode = $project->getMode();
-$file = $project->getTmpPath("{$mode}.web.log");
+$file = $project->getTmpPath("log/{$mode}.web.log");
 $logger->pushHandler($di->newInstance('Monolog\Handler\StreamHandler', array(
     'stream' => $file,
 )));
