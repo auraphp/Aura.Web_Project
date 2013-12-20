@@ -42,8 +42,10 @@ the output.
 ### Configuration
 
 Configuration files are located in `{$PROJECT_PATH}/config` and are organized
-into subdirectories by config mode. (The config mode is stored in the `_mode`
-file in the config directory.)
+into subdirectories by config mode.
+
+The config mode is set by `$_ENV['AURA_CONFIG_MODE']`, either via a server
+variable or the `_env.php` file in the config directory.
 
 The `default` mode directory is always loaded; if the mode is something other
 than `default` then the files in that directory will be loaded after `default`.
