@@ -65,19 +65,20 @@ programmatic modification.
 ### Routing and Dispatching
 
 To add routes of your own, edit the
-`{$PROJECT_PATH}/config/default/modify/routes.php` and `dispatcher.php` files.
-Here are three different styles of routing and dispatching.
+`{$PROJECT_PATH}/config/default/modify/web_router.php` and
+`web_dispatcher.php` files. Here are three different styles of routing and
+dispatching.
 
 #### Micro-Framework Style
 
 The following is an example of a micro-framework style route, where the
 controller logic is embedded in the route params. Edit the
-`config/default/modify/router.php` file to add the following route.
+`config/default/modify/web_router.php` file to add the following route.
 
 ```php
 <?php
 /**
- * {$PROJECT_PATH}/config/default/modify/router.php
+ * {$PROJECT_PATH}/config/default/modify/web_router.php
  */
 $request  = $di->get('web_request');
 $response = $di->get('web_response');
@@ -109,12 +110,12 @@ You can modify the above to put the controller logic in the dispatcher instead
 of the route itself.
 
 First, extract the logic to the dispatcher under the name `blog.read`, placing
-it in the `config/default/modify/dispatcher.php` file.
+it in the `config/default/modify/web_dispatcher.php` file.
 
 ```php
 <?php
 /**
- * {$PROJECT_PATH}/config/default/modify/dispatcher.php
+ * {$PROJECT_PATH}/config/default/modify/web_dispatcher.php
  */
 $request  = $di->get('web_request');
 $response = $di->get('web_response');
@@ -132,7 +133,7 @@ Then point the route to the 'blog.read' dispatcher object.
 ```php
 <?php
 /**
- * {$PROJECT_PATH}/config/default/modify/router.php
+ * {$PROJECT_PATH}/config/default/modify/web_router.php
  */
 $router->add('blog.read', '/blog/read/{id}')
     ->addValues(array(
@@ -209,7 +210,7 @@ under the name `blog` as a lazy-loaded instantiation ...
 ```php
 <?php
 /**
- * {$PROJECT_PATH}/config/default/modify/dispatcher.php
+ * {$PROJECT_PATH}/config/default/modify/web_dispatcher.php
  */
 $dispatcher->setObject('blog', $di->lazyNew('App\Controllers\BlogController'));
 ?>
@@ -221,7 +222,7 @@ its `read` action:
 ```php
 <?php
 /**
- * {$PROJECT_PATH}/config/default/modify/dispatcher.php
+ * {$PROJECT_PATH}/config/default/modify/web_dispatcher.php
  */
 $router->add('blog.read', '/blog/read/{id}')
     ->addValues(array(
