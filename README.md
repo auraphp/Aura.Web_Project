@@ -15,7 +15,7 @@ with iterative refactoring in mind, so you can start with micro-framework-like
 closure controllers, and work your way into more complex controller objects of
 your own design.
 
-  [Aura.Web_Kernel]: https://github.com/auraphp/Aura.Web_Kernel
+[Aura.Web_Kernel]: https://github.com/auraphp/Aura.Web_Kernel
 
 ## Foreword
 
@@ -247,6 +247,6 @@ These are only some common variations of router and dispatcher interactions;
 
 ### Logging
 
-The project automatically logs to `{$PROJECT_PATH}/tmp/{$mode}.web.log`. If
+The project automatically logs to `{$PROJECT_PATH}/tmp/{$mode}.log`. If
 you want to change the logging behaviors, edit the
 `config/default/modify/logger.php` file to modify how Monolog handles entries.
