@@ -8,9 +8,8 @@
     "license": "BSD-2-Clause",
     "authors": [
         {
-            "name": "Paul M. Jones",
-            "email": "pmjones88@gmail.com",
-            "homepage": "https://github.com/pmjones"
+            "name": "Aura.Web_Project Contributors",
+            "homepage": "https://github.com/auraphp/Aura.Web_Project/contributors"
         }
     ],
     "minimum-stability": "dev",
