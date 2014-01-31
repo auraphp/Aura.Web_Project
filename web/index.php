@@ -15,7 +15,6 @@ $base = dirname(__DIR__);
 
 // set up autoloader
 $loader = require "$base/vendor/autoload.php";
-$loader->add('', "{$base}/src");
 
 // load environment modifications
 require "{$base}/config/_env.php";
