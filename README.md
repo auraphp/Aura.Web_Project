@@ -222,7 +222,7 @@ its `read` action:
 ```php
 <?php
 /**
- * {$PROJECT_PATH}/config/default/modify/web_dispatcher.php
+ * {$PROJECT_PATH}/config/default/modify/web_router.php
  */
 $router->add('blog.read', '/blog/read/{id}')
     ->addValues(array(
