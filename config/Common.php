@@ -35,21 +35,18 @@ class Common extends Config
 
     public function modifyRouter(Container $di)
     {
-        $request = $di->get('web_request');
-        $response = $di->get('web_response');
         $router = $di->get('web_router');
 
-        // example route for 'hello world' using request and response services
-        $router->add('hello', '/')
-            ->addValues(array(
-                'controller' => function () use ($request, $response) {
-                    $response->content->set('Hello World!');
-                }
-            ));
+        $router->add('hello', '/');
     }
 
     public function modifyDispatcher($di)
     {
         $dispatcher = $di->get('web_dispatcher');
+        
+        $dispatcher->setObject('hello', function () use ($di) {
+            $response = $di->get('web_response');
+            $response->content->set('Hello World!');
+        });
     }
 }
