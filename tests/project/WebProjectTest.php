@@ -10,12 +10,7 @@ class WebProjectTest extends \PHPUnit_Framework_TestCase
     public static function setUpBeforeClass()
     {
         static::$host = $_ENV['AURA_PROJECT_SERVER_HOST'];
-
-        $start_server = isset($_ENV['AURA_PROJECT_START_SERVER'])
-                      ? $_ENV['AURA_PROJECT_START_SERVER']
-                      : true;
-
-        if ($start_server) {
+        if ($_ENV['AURA_PROJECT_START_SERVER']) {
             static::startServer();
         }
     }
