@@ -3,35 +3,26 @@ namespace Aura\Web_Project;
 
 class WebProjectTest extends \PHPUnit_Framework_TestCase
 {
-    protected $descr = array(
-        0 => array("pipe", "r"), // stdin
-        1 => array("pipe", "w"), // stdout
-        2 => array("pipe", "w")  // stderr
-    );
-
-    protected $pipes;
-
-    protected $server;
-
-    public function setUp()
+    public function testWeb()
     {
-        $docroot = dirname(__DIR__) . '/web/';
-        $this->server = proc_open(
-            "php -S localhost:8080 -t {$docroot}",
-            $this->descr,
-            $this->pipes
+        $host = "127.0.0.1:8080";
+        $root = dirname(__DIR__) . '/web/';
+        $spec = array(
+            0 => array("pipe", "r"), // stdin
+            1 => array("pipe", "w"), // stdout
+            2 => array("pipe", "w")  // stderr
         );
-    }
 
-    protected function tearDown()
-    {
-        proc_terminate($this->server);
-    }
+        $proc = proc_open(
+            "php -S {$host} -t {$root}",
+            $spec,
+            $pipes
+        );
 
-    public function test()
-    {
-        $actual = file_get_contents('http://localhost:8080/');
+        $actual = file_get_contents("http://{$host}/");
         $expect = 'Hello World!';
         $this->assertSame($expect, $actual);
+
+        proc_terminate($proc);
     }
 }
