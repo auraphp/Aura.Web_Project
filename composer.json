@@ -14,10 +14,6 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {
-        "aura/web-kernel": "dev-reduced",
-        "monolog/monolog": "1.*"
-    },
     "autoload": {
         "psr-0": {
             "": "src/"
@@ -36,5 +32,9 @@
                 "prod": "Aura\\Web_Project\\_Config\\Prod"
             }
         }
+    },
+    "require": {
+        "aura/web-kernel": "dev-reduced",
+        "monolog/monolog": "1.*"
     }
 }
