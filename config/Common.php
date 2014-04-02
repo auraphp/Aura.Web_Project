@@ -14,8 +14,8 @@ class Common extends Config
     public function modify(Container $di)
     {
         $this->modifyLogger($di);
-        $this->modifyRouter($di);
-        $this->modifyDispatcher($di);
+        $this->modifyWebRouter($di);
+        $this->modifyWebDispatcher($di);
     }
 
     public function modifyLogger(Container $di)
@@ -33,7 +33,7 @@ class Common extends Config
         ));
     }
 
-    public function modifyRouter(Container $di)
+    public function modifyWebRouter(Container $di)
     {
         $router = $di->get('web_router');
 
@@ -41,7 +41,7 @@ class Common extends Config
                ->setValues(array('controller' => 'hello'));
     }
 
-    public function modifyDispatcher($di)
+    public function modifyWebDispatcher($di)
     {
         $dispatcher = $di->get('web_dispatcher');
         
