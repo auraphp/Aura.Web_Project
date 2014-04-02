@@ -5,7 +5,7 @@ class WebProjectTest extends \PHPUnit_Framework_TestCase
 {
     public function testWeb()
     {
-        $host = "127.0.0.1:8080";
+        $host = "localhost:8080";
         
         // $root = dirname(__DIR__) . '/web/';
         // $spec = array(
