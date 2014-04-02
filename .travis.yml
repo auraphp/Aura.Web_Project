@@ -5,6 +5,8 @@ php:
 before_script:
   - composer self-update
   - composer install
+  - export AURA_PROJECT_START_SERVER="0"
+  - export AURA_PROJECT_SERVER_HOST="localhost:8080"
   - "php -S localhost:8080 -t web/ &"
-  - cd tests
-script: phpunit WebProjectTest.php
+  - cd tests/project
+script: phpunit
