@@ -46,8 +46,14 @@ Configuration files are located in `{$PROJECT_PATH}/config` folder.
 The config mode can be set by `$_ENV['AURA_CONFIG_MODE']`, either via a server
 variable or the `_env.php` file in the config directory.
 
+By default the web project support 3 modes of configuration. 
+
+1. dev  => for Development
+2. test => for Testing
+3. prod => for Production
+
 The `Common.php` file is always loaded. If the mode is something different
- then the appropriate file will be loaded after `common`.
+then the appropriate file will be loaded after `common`.
 
 Every configuration file should extend the `Aura\Di\Config`.
 
@@ -58,11 +64,38 @@ setter methods, and shared services through the DI container.
 these are for retrieving services from the DI container for
 programmatic modification.
 
+Additionally if you need another mode, say `staging` you want to edit
+the `composer.json` and add where the configuration file should 
+be looked up in the namespace.
+
+```json
+    "autoload": {        
+        "psr-4": {
+            "Vendor\\Package\\_Config\\": "config/"
+        }
+    },
+    "extra": {
+        "aura": {
+            "type": "project",
+            "config": {
+                "common": "Vendor\\Package\\_Config\\Common",
+                // ... more stuffs
+                "staging": "Vendor\\Package\\_Config\\Staging"
+            }
+        }
+    }
+```
+
+Don't forget to run `composer update` for composer to make the 
+necessary changes to autoload.
+
 Example
 =======
 
 ```php
 <?php
+namespace Vendor\Package\_Config;
+
 use Aura\Di\Config;
 use Aura\Di\Container;
 
@@ -100,8 +133,8 @@ it in `dev` mode then in `config/Dev.php`
 /**
  * {$PROJECT_PATH}/config/Common.php
  */
- ```php
-<?php
+namespace Vendor\Package\_Config;
+
 use Aura\Di\Config;
 use Aura\Di\Container;
 
@@ -149,6 +182,8 @@ and point the controller to the dispatcher.
 
 ```php
 <?php
+namespace Vendor\Package\_Config;
+
 use Aura\Di\Config;
 use Aura\Di\Container;
 
@@ -237,6 +272,8 @@ DI system to pass _Request_ and _Response_ objects to the constructor.
 /**
  * {$PROJECT_PATH}/config/Common.php
  */
+namespace Vendor\Package\_Config;
+ 
 use Aura\Di\Config;
 use Aura\Di\Container;
 
@@ -264,6 +301,8 @@ under the name `blog` as a lazy-loaded instantiation ...
 /**
  * {$PROJECT_PATH}/config/Common.php
  */
+namespace Vendor\Package\_Config;
+
 use Aura\Di\Config;
 use Aura\Di\Container;
 
@@ -293,6 +332,8 @@ its `read` action:
 /**
  * {$PROJECT_PATH}/config/Common.php
  */
+namespace Vendor\Package\_Config;
+
 use Aura\Di\Config;
 use Aura\Di\Container;
 
