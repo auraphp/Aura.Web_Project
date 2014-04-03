@@ -34,11 +34,11 @@ This will create the project skeleton and install all of the necessary packages.
 
 ### Tests
 
-[![Build Status](https://travis-ci.org/auraphp/Aura.Project_Kernel.png?branch=develop-2)](https://travis-ci.org/auraphp/Aura.Project_Kernel)
+[![Build Status](https://travis-ci.org/auraphp/Aura.Web_Project.png?branch=develop-2)](https://travis-ci.org/auraphp/Aura.Web_Project)
 
-This kernel has 100% code coverage with [PHPUnit](http://phpunit.de). To run the tests at the command line, go to the `tests/project/` directory and issue `./phpunit.sh`.
+This project has 100% code coverage with [PHPUnit](http://phpunit.de). To run the tests at the command line, go to the `tests/project/` directory and issue `./phpunit.sh`.
 
-Alterntatively, after you have installed the project, start the built-in PHP server with the `web/` directory as the document root:
+Alternatively, after you have installed the project, start the built-in PHP server with the `web/` directory as the document root:
 
     cd {$PROJECT_PATH}
     php -S localhost:8000 -t web/
@@ -80,7 +80,7 @@ You should also familiarize yourself with [Aura.Router](https://github.com/aurap
 
 ### Project Configuration
 
-Every Aura project is confgured the same way. Please see the [shared configuration docs](https://github.com/auraphp/Aura.Project_Kernel#configuration) for more information.
+Every Aura project is configured the same way. Please see the [shared configuration docs](https://github.com/auraphp/Aura.Project_Kernel#configuration) for more information.
 
 ### Logging
 
