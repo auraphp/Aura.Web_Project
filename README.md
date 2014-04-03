@@ -41,57 +41,125 @@ the output.
 
 ### Configuration
 
-Configuration files are located in `{$PROJECT_PATH}/config` and are organized
-into subdirectories by config mode.
+Configuration files are located in `{$PROJECT_PATH}/config` folder.
 
-The config mode is set by `$_ENV['AURA_CONFIG_MODE']`, either via a server
+The config mode can be set by `$_ENV['AURA_CONFIG_MODE']`, either via a server
 variable or the `_env.php` file in the config directory.
 
-The `default` mode directory is always loaded; if the mode is something other
-than `default` then the files in that directory will be loaded after `default`.
+By default the web project support 3 modes of configuration. 
 
-Aura projects use a two-stage configuration system.
+1. dev  => for Development
+2. test => for Testing
+3. prod => for Production
 
-1. First, all `define.php` files are included from the packages and the
-project; these define constructor parameters, setter methods, and shared
-services through the DI container.
+The `Common.php` file is always loaded. If the mode is something different
+then the appropriate file will be loaded after `common`.
 
-2. After that, the DI container is locked, and all `modify.php` files are
-included; these are for retrieving services from the DI container for
+Every configuration file should extend the `Aura\Di\Config`.
+
+1. In the `define` method we can set the constructor parameters, 
+setter methods, and shared services through the DI container.
+
+2. The DI container is locked, and all 
+these are for retrieving services from the DI container for
 programmatic modification.
 
-(TBD: examples)
+Additionally if you need another mode, say `staging` you want to edit
+the `composer.json` and add where the configuration file should 
+be looked up in the namespace.
+
+```json
+    "autoload": {        
+        "psr-4": {
+            "Vendor\\Package\\_Config\\": "config/"
+        }
+    },
+    "extra": {
+        "aura": {
+            "type": "project",
+            "config": {
+                "common": "Vendor\\Package\\_Config\\Common",
+                // ... more stuffs
+                "staging": "Vendor\\Package\\_Config\\Staging"
+            }
+        }
+    }
+```
+
+Don't forget to run `composer update` for composer to make the 
+necessary changes to autoload.
+
+Example
+=======
+
+```php
+<?php
+namespace Vendor\Package\_Config;
+
+use Aura\Di\Config;
+use Aura\Di\Container;
+
+class Dev extends Config
+{
+    public function define(Container $di)
+    {  
+        $di->set('db', $di->lazyNew('Aura\Sql\ExtendedPdo'));
+        $di->params['Aura\Sql\ExtendedPdo']['dsn'] = 'mysql:host=localhost;dbname=test';
+        $di->params['Aura\Sql\ExtendedPdo']['username'] = 'username';
+        $di->params['Aura\Sql\ExtendedPdo']['password'] = 'password';
+        $di->params['Aura\Sql\ExtendedPdo']['driver_options'] = array();
+    }
+
+    public function modify(Container $di)
+    {
+    }
+}
+```
 
 ### Routing and Dispatching
 
-To add routes of your own, edit the
-`{$PROJECT_PATH}/config/default/modify/web_router.php` and
-`web_dispatcher.php` files. Here are three different styles of routing and
-dispatching.
+In the `modify` method we can add the routes and how it should be dispacthed. 
+Here are three different styles of routing and dispatching.
 
 #### Micro-Framework Style
 
 The following is an example of a micro-framework style route, where the
-controller logic is embedded in the route params. Edit the
-`config/default/modify/web_router.php` file to add the following route.
+controller logic is embedded in the route params. If the route 
+needs to be on every mode edit the `config/Common.php`. If you only need
+it in `dev` mode then in `config/Dev.php`
 
 ```php
 <?php
 /**
- * {$PROJECT_PATH}/config/default/modify/web_router.php
+ * {$PROJECT_PATH}/config/Common.php
  */
-$request  = $di->get('web_request');
-$response = $di->get('web_response');
-$router->add('blog.read', '/blog/read/{id}')
-    ->addValues(array(
-        'controller' => function ($id) use ($request, $response) {
-            $content = "Reading blog post $id";
-            $response->content->set(htmlspecialchars(
-                $content, ENT_QUOTES|ENT_SUBSTITUTE, 'UTF-8'
+namespace Vendor\Package\_Config;
+
+use Aura\Di\Config;
+use Aura\Di\Container;
+
+class Common extends Config
+{
+    public function define(Container $di)
+    {        
+    }
+
+    public function modify(Container $di)
+    {
+        $request  = $di->get('web_request');
+        $response = $di->get('web_response');
+        $router = $di->get('web_router');
+        $router->add('blog.read', '/blog/read/{id}')
+            ->addValues(array(
+                'controller' => function ($id) use ($request, $response) {
+                    $content = "Reading blog post $id";
+                    $response->content->set(htmlspecialchars(
+                        $content, ENT_QUOTES|ENT_SUBSTITUTE, 'UTF-8'
+                    ));
+                }
             ));
-        }
-    ));
-?>
+    }
+}
 ```
 
 You can now start up the built-in PHP server to get the application
@@ -109,37 +177,44 @@ output.
 You can modify the above to put the controller logic in the dispatcher instead
 of the route itself.
 
-First, extract the logic to the dispatcher under the name `blog.read`, placing
-it in the `config/default/modify/web_dispatcher.php` file.
+First, extract the logic to the dispatcher under the name `blog.read` 
+and point the controller to the dispatcher.
 
 ```php
 <?php
-/**
- * {$PROJECT_PATH}/config/default/modify/web_dispatcher.php
- */
-$request  = $di->get('web_request');
-$response = $di->get('web_response');
-$dispatcher->setObject('blog.read', function ($id) use ($request, $response) {
-    $content = "Reading blog post $id";
-    $response->content->set(htmlspecialchars(
-        $content, ENT_QUOTES|ENT_SUBSTITUTE, 'UTF-8'
-    ));
-});
-?>
-```
+namespace Vendor\Package\_Config;
 
-Then point the route to the 'blog.read' dispatcher object.
+use Aura\Di\Config;
+use Aura\Di\Container;
 
-```php
-<?php
-/**
- * {$PROJECT_PATH}/config/default/modify/web_router.php
- */
-$router->add('blog.read', '/blog/read/{id}')
-    ->addValues(array(
-        'controller' => 'blog.read',
-    ));
-?>
+class Common extends Config
+{
+    public function define(Container $di)
+    {        
+    }
+
+    public function modify(Container $di)
+    {
+        $request  = $di->get('web_request');
+        $response = $di->get('web_response');
+        
+        // dispatcher
+        $dispatcher = $di->get('web_dispatcher');
+        $dispatcher->setObject('blog.read', function ($id) use ($request, $response) {
+            $content = "Reading blog post $id";
+            $response->content->set(htmlspecialchars(
+                $content, ENT_QUOTES|ENT_SUBSTITUTE, 'UTF-8'
+            ));
+        });
+        
+        // router
+        $router = $di->get('web_router');
+        $router->add('blog.read', '/blog/read/{id}')
+            ->addValues(array(
+                'controller' => 'blog.read',
+            ));        
+    }
+}
 ```
 
 You can now start up the built-in PHP server to get the application
@@ -189,19 +264,33 @@ class BlogController
 ```
 
 Next, tell the project how to build the _BlogController_ through the DI
-system. Edit the project `config/default/define.php` config file to tell the
+system. Edit the project `config/Common.php` config file to tell the
 DI system to pass _Request_ and _Response_ objects to the constructor.
 
 ```php
 <?php
 /**
- * {$PROJECT_PATH}/config/default/define.php
+ * {$PROJECT_PATH}/config/Common.php
  */
-$di->params['App\Controllers\BlogController'] = array(
-    'request' => $di->lazyGet('web_request'),
-    'response' => $di->lazyGet('web_response'),
-);
-?>
+namespace Vendor\Package\_Config;
+ 
+use Aura\Di\Config;
+use Aura\Di\Container;
+
+class Common extends Config
+{
+    public function define(Container $di)
+    {        
+    }
+
+    public function modify(Container $di)
+    {
+        $di->params['App\Controllers\BlogController'] = array(
+            'request' => $di->lazyGet('web_request'),
+            'response' => $di->lazyGet('web_response'),
+        );
+    }
+}
 ```
 
 After that, put the _App\Controllers\BlogController_ object in the dispatcher
@@ -210,10 +299,29 @@ under the name `blog` as a lazy-loaded instantiation ...
 ```php
 <?php
 /**
- * {$PROJECT_PATH}/config/default/modify/web_dispatcher.php
+ * {$PROJECT_PATH}/config/Common.php
  */
-$dispatcher->setObject('blog', $di->lazyNew('App\Controllers\BlogController'));
-?>
+namespace Vendor\Package\_Config;
+
+use Aura\Di\Config;
+use Aura\Di\Container;
+
+class Common extends Config
+{
+    public function define(Container $di)
+    {        
+    }
+
+    public function modify(Container $di)
+    {
+        $di->params['App\Controllers\BlogController'] = array(
+            'request' => $di->lazyGet('web_request'),
+            'response' => $di->lazyGet('web_response'),
+        );
+        $dispatcher = $di->get('web_dispatcher');
+        $dispatcher->setObject('blog', $di->lazyNew('App\Controllers\BlogController'));
+    }
+}
 ```
 
 ... and finally, point the router to the `blog` controller object and its
@@ -222,13 +330,38 @@ its `read` action:
 ```php
 <?php
 /**
- * {$PROJECT_PATH}/config/default/modify/web_dispatcher.php
+ * {$PROJECT_PATH}/config/Common.php
  */
-$router->add('blog.read', '/blog/read/{id}')
-    ->addValues(array(
-        'controller' => 'blog',
-        'action' => 'read',
-    ));
+namespace Vendor\Package\_Config;
+
+use Aura\Di\Config;
+use Aura\Di\Container;
+
+class Common extends Config
+{
+    public function define(Container $di)
+    {        
+    }
+
+    public function modify(Container $di)
+    {
+        $di->params['App\Controllers\BlogController'] = array(
+            'request' => $di->lazyGet('web_request'),
+            'response' => $di->lazyGet('web_response'),
+        );
+        $dispatcher = $di->get('web_dispatcher');
+        $dispatcher->setObject('blog', $di->lazyNew('App\Controllers\BlogController'));
+
+        $router = $di->get('web_router');
+        $router->add('blog.read', '/blog/read/{id}')
+            ->addValues(array(
+                'controller' => 'blog',
+                'action' => 'read',
+            ));
+    }
+}
+```
+
 ?>
 ```
 
@@ -252,4 +385,4 @@ These are only some common variations of router and dispatcher interactions;
 
 The project automatically logs to `{$PROJECT_PATH}/tmp/{$mode}.log`. If
 you want to change the logging behaviors, edit the
-`config/default/modify/logger.php` file to modify how Monolog handles entries.
+`config/Common.php` file to modify how Monolog handles entries.
