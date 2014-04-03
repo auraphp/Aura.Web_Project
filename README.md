@@ -57,6 +57,17 @@ This projects attempts to comply with [PSR-1][], [PSR-2][], and [PSR-4][]. If yo
 
 To ask questions, provide feedback, or otherwise communicate with the Aura community, please join our [Google Group](http://groups.google.com/group/auraphp), follow [@auraphp on Twitter](http://twitter.com/auraphp), or chat with us on #auraphp on Freenode.
 
+### Services
+
+This package uses services defined by:
+
+- [Aura.Project_Kernel](https://github.com/auraphp/Aura.Project_Kernel#services)
+- [Aura.Web_Kernel](https://github.com/auraphp/Aura.Web_Kernel#services)
+
+This project resets the following services:
+
+- `logger`: an instance of `Monolog\Logger`
+
 ## Getting Started
 
 ### Component Packages
