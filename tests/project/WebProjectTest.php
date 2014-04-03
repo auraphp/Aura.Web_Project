@@ -3,46 +3,24 @@ namespace Aura\Web_Project;
 
 class WebProjectTest extends \PHPUnit_Framework_TestCase
 {
-    protected static $server;
+    protected $host;
 
-    protected static $host;
-
-    public static function setUpBeforeClass()
+    public function setUp()
     {
-        static::$host = $_ENV['AURA_PROJECT_SERVER_HOST'];
-        if ($_ENV['AURA_PROJECT_START_SERVER']) {
-            static::startServer();
-        }
+        $this->host = $_ENV['AURA_PROJECT_SERVER_HOST'];
     }
 
-    public static function startServer()
+    public function tearDown()
     {
-        $host = static::$host;
-        $root = dirname(dirname(__DIR__)) . '/web/';
-        $spec = array(
-            0 => array("pipe", "r"), // stdin
-            1 => array("pipe", "w"), // stdout
-            2 => array("pipe", "w")  // stderr
-        );
-
-        static::$server = proc_open(
-            "php -S {static::$host} -t {$root}",
-            $spec,
-            $pipes
-        );
-    }
-
-    public static function tearDownAfterClass()
-    {
-        if (static::$server) {
-            proc_terminate(static::$server);
+        if ($this->server) {
+            proc_close($this->server);
         }
     }
 
     public function testWeb()
     {
-        $host = static::$host;
-        $actual = file_get_contents("http://{$host}/");
+        $url = "http://{$this->host}/index.php";
+        $actual = file_get_contents($url);
         $expect = 'Hello World!';
         $this->assertSame($expect, $actual);
     }
