@@ -1,5 +1,4 @@
-export AURA_PROJECT_SERVER_HOST="localhost:8080"
-php -S $AURA_PROJECT_SERVER_HOST -t ../../web/ &
+php -S localhost:8080 -t ../../web/ &
 PID=$!
 phpunit
 STATUS=$?
