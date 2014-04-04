@@ -8,10 +8,10 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-
-// invoke the project kernel script
-require dirname(__DIR__) . '/vendor/aura/project-kernel/scripts/kernel.php';
-
-// create and invoke a web kernel
-$web_kernel = $di->newInstance('Aura\Web_Kernel\WebKernel');
-$web_kernel();
+$path = dirname(__DIR__);
+require "{$path}/vendor/autoload.php";
+$kernel = (new \Aura\Project_Kernel\Factory)->newKernel(
+    $path,
+    'Aura\Web_Kernel\WebKernel'
+);
+$kernel();

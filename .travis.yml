@@ -5,5 +5,5 @@ php:
 before_script:
   - composer self-update
   - composer install
-  - cd vendor/aura/web-kernel/tests
-script: phpunit
+  - cd tests/project
+script: ./phpunit.sh
