@@ -15,7 +15,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "aura/web-kernel": "dev-reduced",
+        "aura/web-kernel": "2.*@dev",
         "monolog/monolog": "1.*"
     },
     "autoload": {
