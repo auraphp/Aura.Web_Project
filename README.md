@@ -34,7 +34,7 @@ This will create the project skeleton and install all of the necessary packages.
 
 ### Tests
 
-[![Build Status](https://travis-ci.org/auraphp/Aura.Web_Project.png?branch=develop-2)](https://travis-ci.org/auraphp/Aura.Web_Project)
+[![Build Status](https://travis-ci.org/auraphp/Aura.Web_Project.png)](https://travis-ci.org/auraphp/Aura.Web_Project)
 
 This project has 100% code coverage with [PHPUnit](http://phpunit.de). To run the tests at the command line, go to the `tests/project/` directory and issue `./phpunit.sh`.
 
