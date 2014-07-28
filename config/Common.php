@@ -38,7 +38,7 @@ class Common extends Config
         $router = $di->get('web_router');
 
         $router->add('hello', '/')
-               ->setValues(array('controller' => 'hello'));
+               ->setValues(array('action' => 'hello'));
     }
 
     public function modifyWebDispatcher($di)
