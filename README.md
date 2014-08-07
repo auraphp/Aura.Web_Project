@@ -102,7 +102,7 @@ Here are three different styles of routing and dispatching.
 Aura is the first framework which follows the 
 [Action Domain Responder](https://github.com/pmjones/mvc-refinement) pattern.
 The following is an example of a micro-framework style route, where the 
-action logic is embedded in the route params. In the `modify()` 
+action logic is embedded in the route params. In the `modifyWebRouter()` 
 config method, we retrieve the shared `web_request` and `web_response` 
 services, along with the `web_router` service. We then add a route names 
 `blog.read` and embed the action code as a closure.
@@ -118,7 +118,7 @@ class Common extends Config
 {
     // ...
 
-    public function modifyRouter(Container $di)
+    public function modifyWebRouter(Container $di)
     {
         $request = $di->get('web_request');
         $response = $di->get('web_response');
@@ -138,7 +138,6 @@ class Common extends Config
 
     // ...
 }
-?>
 ```
 
 You can now start up the built-in PHP server to get the application running ...
@@ -168,7 +167,18 @@ class Common extends Config
 {
     // ...
 
-    public function modifyDispatcher(Container $di)
+
+    public function modifyWebRouter(Container $di)
+    {
+        $router = $di->get('web_router');
+        $router
+            ->add('blog.read', '/blog/read/{id}')
+            ->addValues(array(
+                'action' => 'blog.read',
+            ));
+    }
+
+    public function modifyWebDispatcher(Container $di)
     {
         $request = $di->get('web_request');
         $response = $di->get('web_response');
@@ -183,22 +193,10 @@ class Common extends Config
                 ));
             }
         );
-        
-    }
-
-    public function modifyRouter(Container $di)
-    {
-        $router = $di->get('web_router');
-        $router
-            ->add('blog.read', '/blog/read/{id}')
-            ->addValues(array(
-                'action' => 'blog.read',
-            ));
     }
 
     // ...
 }
-?>
 ```
 
 You can now start up the built-in PHP server to get the application running ...
@@ -242,7 +240,6 @@ class BlogReadAction
         ));
     }
 }
-?>
 ```
 
 Next, tell the project how to build the _BlogReadAction_ through the DI
@@ -271,11 +268,10 @@ class Common extends Config
 
     // ...
 }
-?>
 ```
 
 After that, put the _App\Actions\BlogReadAction_ object in the dispatcher
-under the name `blog` as a lazy-loaded instantiation ...
+under the name `blog.read` as a lazy-loaded instantiation ...
 
 ```php
 <?php
@@ -288,7 +284,7 @@ class Common extends Config
 {
     // ...
 
-    public function modifyDispatcher(Container $di)
+    public function modifyWebDispatcher(Container $di)
     {
         $dispatcher = $di->get('web_dispatcher');
         $dispatcher->setObject(
@@ -299,10 +295,9 @@ class Common extends Config
 
     // ...
 }
-?>
 ```
 
-... and finally, point the router to the `blog` action object:
+... and finally, point the router to the `blog.read` action object:
 
 ```php
 <?php
@@ -315,7 +310,7 @@ class Common extends Config
 {
     // ...
 
-    public function modifyRouter(Container $di)
+    public function modifyWebRouter(Container $di)
     {
         $router = $di->get('web_router');
         $router
@@ -327,7 +322,6 @@ class Common extends Config
 
     // ...
 }
-?>
 ```
 
 You can now start up the built-in PHP server to get the application
