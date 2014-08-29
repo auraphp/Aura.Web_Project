@@ -85,17 +85,27 @@ Every Aura project is configured the same way. Please see the [shared configurat
 ### Logging
 
 The project automatically logs to `{$PROJECT_PATH}/tmp/log/{$mode}.log`. If
-you want to change the logging behaviors for a particular config mode, edit the related config file (e.g., `config/Dev.php`) file to modify the `logger` service.
+you want to change the logging behaviors for a particular config mode, 
+edit the related config file (e.g., `config/Dev.php`) file to modify the `logger` service.
 
 ### Routing and Dispatching
 
-We configure routing and dispatching via the project-level `config/` class files. If a route needs to be available in every config mode, edit the project-level `config/Common.php` class file. If it only needs to be available in a specific mode, e.g. `dev`, then edit the config file for that mode.
+We configure routing and dispatching via the project-level `config/` 
+class files. If a route needs to be available in every config mode, 
+edit the project-level `config/Common.php` class file. If it only needs 
+to be available in a specific mode, e.g. `dev`, then edit the config file for that mode.
 
 Here are three different styles of routing and dispatching.
 
 #### Micro-Framework Style
 
-The following is an example of a micro-framework style route, where the controller logic is embedded in the route params. In the `modify()` config method, we retrieve the shared `web_request` and `web_response` services, along with the `web_router` service. We then add a route names `blog.read` and embed the controller code as a closure.
+Aura is the first framework which follows the 
+[Action Domain Responder](https://github.com/pmjones/mvc-refinement) pattern.
+The following is an example of a micro-framework style route, where the 
+action logic is embedded in the route params. In the `modify()` 
+config method, we retrieve the shared `web_request` and `web_response` 
+services, along with the `web_router` service. We then add a route names 
+`blog.read` and embed the action code as a closure.
 
 ```php
 <?php
@@ -117,7 +127,7 @@ class Common extends Config
         $router
             ->add('blog.read', '/blog/read/{id}')
             ->addValues(array(
-                'controller' => function ($id) use ($request, $response) {
+                'action' => function ($id) use ($request, $response) {
                     $content = "Reading blog post $id";
                     $response->content->set(htmlspecialchars(
                         $content, ENT_QUOTES|ENT_SUBSTITUTE, 'UTF-8'
@@ -140,9 +150,12 @@ You can now start up the built-in PHP server to get the application running ...
 
 #### Modified Micro-Framework Style
 
-We can modify the above example to put the controller logic in the dispatcher instead of the route itself.
+We can modify the above example to put the controller logic in the 
+dispatcher instead of the route itself.
 
-Extract the controller closure to the dispatcher under the name `blog.read`. Then, in the route, use a `controller` value that matches the name in the dispatcher.
+Extract the action closure to the dispatcher under the name 
+`blog.read`. Then, in the route, use a `action` value that 
+matches the name in the dispatcher.
 
 ```php
 <?php
@@ -179,7 +192,7 @@ class Common extends Config
         $router
             ->add('blog.read', '/blog/read/{id}')
             ->addValues(array(
-                'controller' => 'blog.read',
+                'action' => 'blog.read',
             ));
     }
 
@@ -198,22 +211,22 @@ output.
 
 #### Full-Stack Style
 
-You can migrate from a micro-controller style to a full-stack style (or start
+You can migrate from a micro style to a full-stack style (or start
 with full-stack style in the first place).
 
-First, define a controller class and place it in the project `src/` directory.
+First, define an action class and place it in the project `src/` directory.
 
 ```php
 <?php
 /**
- * {$PROJECT_PATH}/src/App/Controllers/BlogController.php
+ * {$PROJECT_PATH}/src/App/Actions/BlogReadAction.php
  */
-namespace App\Controllers;
+namespace App\Actions;
 
 use Aura\Web\Request;
 use Aura\Web\Response;
 
-class BlogController
+class BlogReadAction
 {
     public function __construct(Request $request, Response $response)
     {
@@ -221,7 +234,7 @@ class BlogController
         $this->response = $response;
     }
     
-    public function read($id)
+    public function __invoke($id)
     {
         $content = "Reading blog post $id";
         $this->response->content->set(htmlspecialchars(
@@ -232,10 +245,10 @@ class BlogController
 ?>
 ```
 
-Next, tell the project how to build the _BlogController_ through the DI
+Next, tell the project how to build the _BlogReadAction_ through the DI
 _Container_. Edit the project `config/Common.php` file to configure the
 _Container_ to pass the `web_request` and `web_response` service objects to 
-the _BlogController_ constructor.
+the _BlogReadAction_ constructor.
 
 ```php
 <?php
@@ -250,7 +263,7 @@ class Common extends Config
     {
         $di->set('logger', $di->lazyNew('Monolog\Logger'));
 
-        $di->params['App\Controllers\BlogController'] = array(
+        $di->params['App\Actions\BlogReadAction'] = array(
             'request' => $di->lazyGet('web_request'),
             'response' => $di->lazyGet('web_response'),
         );
@@ -261,7 +274,7 @@ class Common extends Config
 ?>
 ```
 
-After that, put the _App\Controllers\BlogController_ object in the dispatcher
+After that, put the _App\Actions\BlogReadAction_ object in the dispatcher
 under the name `blog` as a lazy-loaded instantiation ...
 
 ```php
@@ -279,8 +292,8 @@ class Common extends Config
     {
         $dispatcher = $di->get('web_dispatcher');
         $dispatcher->setObject(
-            'blog',
-            $di->lazyNew('App\Controllers\BlogController')
+            'blog.read',
+            $di->lazyNew('App\Actions\BlogReadAction')
         );
     }
 
@@ -289,8 +302,7 @@ class Common extends Config
 ?>
 ```
 
-... and finally, point the router to the `blog` controller object and its
-its `read` action:
+... and finally, point the router to the `blog` action object:
 
 ```php
 <?php
@@ -309,8 +321,7 @@ class Common extends Config
         $router
             ->add('blog.read', '/blog/read/{id}')
             ->addValues(array(
-                'controller' => 'blog',
-                'action' => 'read',
+                'action' => 'blog.read',
             ));
     }
 
