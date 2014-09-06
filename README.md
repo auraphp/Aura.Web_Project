@@ -7,8 +7,8 @@ injection container, a configuration system, a router, a dispatcher, a pair of
 request and response objects, and a logging instance.
 
 This minimal implementation should not be taken as "restrictive". The DI
-container, with its two-stage configuration system, allows a wide range of 
-programmatic service definitions. The router and dispatcher are built with 
+container, with its two-stage configuration system, allows a wide range of
+programmatic service definitions. The router and dispatcher are built with
 iterative refactoring in mind, so you can start with micro-framework-like
 closure controllers, and work your way into more complex controller objects of
 your own design.
@@ -17,7 +17,7 @@ your own design.
 
 ### Requirements
 
-This project requires PHP 5.4 or later. Unlike Aura library packages, this 
+This project requires PHP 5.4 or later. Unlike Aura library packages, this
 project package has userland dependencies, which themselves may have other
 dependencies:
 
@@ -29,7 +29,7 @@ dependencies:
 Install this project via Composer to a `{$PROJECT_PATH}` of your choosing:
 
     composer create-project --stability=dev aura/web-project {$PROJECT_PATH}
-    
+
 This will create the project skeleton and install all of the necessary packages.
 
 ### Tests
@@ -85,26 +85,26 @@ Every Aura project is configured the same way. Please see the [shared configurat
 ### Logging
 
 The project automatically logs to `{$PROJECT_PATH}/tmp/log/{$mode}.log`. If
-you want to change the logging behaviors for a particular config mode, 
+you want to change the logging behaviors for a particular config mode,
 edit the related config file (e.g., `config/Dev.php`) file to modify the `logger` service.
 
 ### Routing and Dispatching
 
-We configure routing and dispatching via the project-level `config/` 
-class files. If a route needs to be available in every config mode, 
-edit the project-level `config/Common.php` class file. If it only needs 
+We configure routing and dispatching via the project-level `config/`
+class files. If a route needs to be available in every config mode,
+edit the project-level `config/Common.php` class file. If it only needs
 to be available in a specific mode, e.g. `dev`, then edit the config file for that mode.
 
 Here are three different styles of routing and dispatching.
 
 #### Micro-Framework Style
 
-Aura is the first framework which follows the 
+Aura is the first framework which follows the
 [Action Domain Responder](https://github.com/pmjones/mvc-refinement) pattern.
-The following is an example of a micro-framework style route, where the 
-action logic is embedded in the route params. In the `modify()` 
-config method, we retrieve the shared `web_request` and `web_response` 
-services, along with the `web_router` service. We then add a route names 
+The following is an example of a micro-framework style route, where the
+action logic is embedded in the route params. In the `modify()`
+config method, we retrieve the shared `web_request` and `web_response`
+services, along with the `web_router` service. We then add a route names
 `blog.read` and embed the action code as a closure.
 
 ```php
@@ -150,11 +150,11 @@ You can now start up the built-in PHP server to get the application running ...
 
 #### Modified Micro-Framework Style
 
-We can modify the above example to put the controller logic in the 
+We can modify the above example to put the controller logic in the
 dispatcher instead of the route itself.
 
-Extract the action closure to the dispatcher under the name 
-`blog.read`. Then, in the route, use a `action` value that 
+Extract the action closure to the dispatcher under the name
+`blog.read`. Then, in the route, use a `action` value that
 matches the name in the dispatcher.
 
 ```php
@@ -172,7 +172,7 @@ class Common extends Config
     {
         $request = $di->get('web_request');
         $response = $di->get('web_response');
-        
+
         $dispatcher = $di->get('web_dispatcher');
         $dispatcher->setObject(
             'blog.read',
@@ -183,7 +183,7 @@ class Common extends Config
                 ));
             }
         );
-        
+
     }
 
     public function modifyRouter(Container $di)
@@ -233,7 +233,7 @@ class BlogReadAction
         $this->request = $request;
         $this->response = $response;
     }
-    
+
     public function __invoke($id)
     {
         $content = "Reading blog post $id";
@@ -247,13 +247,13 @@ class BlogReadAction
 
 Next, tell the project how to build the _BlogReadAction_ through the DI
 _Container_. Edit the project `config/Common.php` file to configure the
-_Container_ to pass the `web_request` and `web_response` service objects to 
+_Container_ to pass the `web_request` and `web_response` service objects to
 the _BlogReadAction_ constructor.
 
 ```php
 <?php
 namespace Aura\Web_Project\_Config;
- 
+
 use Aura\Di\Config;
 use Aura\Di\Container;
 
@@ -261,7 +261,7 @@ class Common extends Config
 {
     public function define(Container $di)
     {
-        $di->set('logger', $di->lazyNew('Monolog\Logger'));
+        $di->set('aura/project-kernel:logger', $di->lazyNew('Monolog\Logger'));
 
         $di->params['App\Actions\BlogReadAction'] = array(
             'request' => $di->lazyGet('web_request'),
