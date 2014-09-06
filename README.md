@@ -120,10 +120,10 @@ class Common extends Config
 
     public function modifyRouter(Container $di)
     {
-        $request = $di->get('web_request');
-        $response = $di->get('web_response');
+        $request = $di->get('aura/web-kernel:request');
+        $response = $di->get('aura/web-kernel:response');
 
-        $router = $di->get('web_router');
+        $router = $di->get('aura/web-kernel:router');
         $router
             ->add('blog.read', '/blog/read/{id}')
             ->addValues(array(
@@ -170,10 +170,10 @@ class Common extends Config
 
     public function modifyDispatcher(Container $di)
     {
-        $request = $di->get('web_request');
-        $response = $di->get('web_response');
+        $request = $di->get('aura/web-kernel:request');
+        $response = $di->get('aura/web-kernel:response');
 
-        $dispatcher = $di->get('web_dispatcher');
+        $dispatcher = $di->get('aura/web-kernel:dispatcher');
         $dispatcher->setObject(
             'blog.read',
             function ($id) use ($request, $response) {
@@ -188,7 +188,7 @@ class Common extends Config
 
     public function modifyRouter(Container $di)
     {
-        $router = $di->get('web_router');
+        $router = $di->get('aura/web-kernel:router');
         $router
             ->add('blog.read', '/blog/read/{id}')
             ->addValues(array(
@@ -264,8 +264,8 @@ class Common extends Config
         $di->set('aura/project-kernel:logger', $di->lazyNew('Monolog\Logger'));
 
         $di->params['App\Actions\BlogReadAction'] = array(
-            'request' => $di->lazyGet('web_request'),
-            'response' => $di->lazyGet('web_response'),
+            'request' => $di->lazyGet('aura/web-kernel:request'),
+            'response' => $di->lazyGet('aura/web-kernel:response'),
         );
     }
 
@@ -290,7 +290,7 @@ class Common extends Config
 
     public function modifyDispatcher(Container $di)
     {
-        $dispatcher = $di->get('web_dispatcher');
+        $dispatcher = $di->get('aura/web-kernel:dispatcher');
         $dispatcher->setObject(
             'blog.read',
             $di->lazyNew('App\Actions\BlogReadAction')
@@ -317,7 +317,7 @@ class Common extends Config
 
     public function modifyRouter(Container $di)
     {
-        $router = $di->get('web_router');
+        $router = $di->get('aura/web-kernel:router');
         $router
             ->add('blog.read', '/blog/read/{id}')
             ->addValues(array(

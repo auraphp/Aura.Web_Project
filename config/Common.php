@@ -35,7 +35,7 @@ class Common extends Config
 
     public function modifyWebRouter(Container $di)
     {
-        $router = $di->get('web_router');
+        $router = $di->get('aura/web-kernel:router');
 
         $router->add('hello', '/')
                ->setValues(array('action' => 'hello'));
@@ -43,10 +43,10 @@ class Common extends Config
 
     public function modifyWebDispatcher($di)
     {
-        $dispatcher = $di->get('web_dispatcher');
+        $dispatcher = $di->get('aura/web-kernel:dispatcher');
 
         $dispatcher->setObject('hello', function () use ($di) {
-            $response = $di->get('web_response');
+            $response = $di->get('aura/web-kernel:response');
             $response->content->set('Hello World!');
         });
     }
