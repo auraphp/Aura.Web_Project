@@ -66,7 +66,7 @@ This package uses services defined by:
 
 This project resets the following services:
 
-- `logger`: an instance of `Monolog\Logger`
+- `aura/project-kernel:logger`: an instance of `Monolog\Logger`
 
 ## Getting Started
 
@@ -86,14 +86,16 @@ Every Aura project is configured the same way. Please see the [shared configurat
 
 The project automatically logs to `{$PROJECT_PATH}/tmp/log/{$mode}.log`. If
 you want to change the logging behaviors for a particular config mode,
-edit the related config file (e.g., `config/Dev.php`) file to modify the `logger` service.
+edit the related config file (e.g., `config/Dev.php`) file to modify the
+`aura/project-kernel:logger` service.
 
 ### Routing and Dispatching
 
 We configure routing and dispatching via the project-level `config/`
 class files. If a route needs to be available in every config mode,
 edit the project-level `config/Common.php` class file. If it only needs
-to be available in a specific mode, e.g. `dev`, then edit the config file for that mode.
+to be available in a specific mode, e.g. `dev`, then edit the config file for
+that mode.
 
 Here are three different styles of routing and dispatching.
 
@@ -101,18 +103,12 @@ Here are three different styles of routing and dispatching.
 
 Aura is the first framework which follows the
 [Action Domain Responder](https://github.com/pmjones/mvc-refinement) pattern.
-<<<<<<< HEAD
-The following is an example of a micro-framework style route, where the
-action logic is embedded in the route params. In the `modify()`
-config method, we retrieve the shared `web_request` and `web_response`
-services, along with the `web_router` service. We then add a route names
-=======
 The following is an example of a micro-framework style route, where the
 action logic is embedded in the route params. In the `modifyWebRouter()`
-config method, we retrieve the shared `web_request` and `web_response`
-services, along with the `web_router` service. We then add a route names
->>>>>>> 4624cdd871992f4426eaabf9231b20f26f90ddc5
-`blog.read` and embed the action code as a closure.
+config method, we retrieve the shared `aura/web-kernel:request` and
+`aura/web-kernel:response` services, along with the `aura/web-kernel:router`
+service. We then add a route names `blog.read` and embed the action code as a
+closure.
 
 ```php
 <?php
@@ -145,6 +141,7 @@ class Common extends Config
 
     // ...
 }
+?>
 ```
 
 You can now start up the built-in PHP server to get the application running ...
@@ -203,18 +200,9 @@ class Common extends Config
 
     }
 
-    public function modifyRouter(Container $di)
-    {
-        $router = $di->get('aura/web-kernel:router');
-        $router
-            ->add('blog.read', '/blog/read/{id}')
-            ->addValues(array(
-                'action' => 'blog.read',
-            ));
-    }
-
     // ...
 }
+?>
 ```
 
 You can now start up the built-in PHP server to get the application running ...
@@ -258,6 +246,7 @@ class BlogReadAction
         ));
     }
 }
+?>
 ```
 
 Next, tell the project how to build the _BlogReadAction_ through the DI
@@ -286,6 +275,7 @@ class Common extends Config
 
     // ...
 }
+?>
 ```
 
 After that, put the _App\Actions\BlogReadAction_ object in the dispatcher
@@ -313,6 +303,7 @@ class Common extends Config
 
     // ...
 }
+?>
 ```
 
 ... and finally, point the router to the `blog.read` action object:
@@ -331,15 +322,12 @@ class Common extends Config
     public function modifyWebRouter(Container $di)
     {
         $router = $di->get('aura/web-kernel:router');
-        $router
-            ->add('blog.read', '/blog/read/{id}')
-            ->addValues(array(
-                'action' => 'blog.read',
-            ));
+        $router->add('blog.read', '/blog/read/{id}');
     }
 
     // ...
 }
+?>
 ```
 
 You can now start up the built-in PHP server to get the application
