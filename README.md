@@ -174,7 +174,7 @@ class Common extends Config
 
     public function modifyWebRouter(Container $di)
     {
-        $router = $di->get('web_router');
+        $router = $di->get('aura/web-kernel:router');
         $router
             ->add('blog.read', '/blog/read/{id}')
             ->addValues(array(
@@ -251,7 +251,7 @@ class BlogReadAction
 
 Next, tell the project how to build the _BlogReadAction_ through the DI
 _Container_. Edit the project `config/Common.php` file to configure the
-_Container_ to pass the `web_request` and `web_response` service objects to
+_Container_ to pass the `aura/web-kernel:request` and `aura/web-kernel:response` service objects to
 the _BlogReadAction_ constructor.
 
 ```php
