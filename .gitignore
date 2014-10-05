@@ -1,3 +1,4 @@
-vendor
 composer.lock
-tmp/log
+tmp/*
+!tmp/.placeholder
+vendor
