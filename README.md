@@ -28,7 +28,7 @@ dependencies:
 
 Install this project via Composer to a `{$PROJECT_PATH}` of your choosing:
 
-    composer create-project --stability=dev aura/web-project {$PROJECT_PATH}
+    composer create-project aura/web-project {$PROJECT_PATH}
 
 This will create the project skeleton and install all of the necessary packages.
 
