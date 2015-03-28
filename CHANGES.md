@@ -1,1 +1,1 @@
-This release fixes the config-mode environment check to look in both $_ENV and in getenv(). It also modifies the testing structure and updates other support files.
+This release fixes a typo in the .gitignore file.
