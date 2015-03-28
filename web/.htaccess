@@ -4,7 +4,7 @@
     
     # turn empty requests into requests for "index.php",
     # keeping the query string intact
-    RewriteRule ^$ index.php [QSA]
+    RewriteRule ^$ /index.php [QSA]
     
     # look for cached versions of files in ./web/cache/
     RewriteCond %{DOCUMENT_ROOT}/cache%{REQUEST_URI} -f
@@ -16,5 +16,5 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !favicon.ico$
-    RewriteRule ^(.*)$ index.php [QSA,L]
+    RewriteRule ^(.*)$ /index.php [QSA,L]
 </IfModule>
