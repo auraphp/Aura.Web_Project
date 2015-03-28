@@ -1,4 +1,4 @@
-composer.lock
-tmp/*
-!tmp/.placeholder
-vendor
+/composer.lock
+/tmp/*
+/!tmp/.placeholder
+/vendor

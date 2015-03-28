@@ -33,5 +33,10 @@
                 "prod": "Aura\\Web_Project\\_Config\\Prod"
             }
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aura\\Web_Project\\": "tests/"
+        }
     }
 }
