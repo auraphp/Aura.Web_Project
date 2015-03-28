@@ -1,1 +1,1 @@
-Initial 2.0 beta release.
+This release fixes the config-mode environment check to look in both $_ENV and in getenv(). It also modifies the testing structure and updates other support files.
